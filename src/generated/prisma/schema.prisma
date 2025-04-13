@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId    String    @id @default(uuid()) @map("user_id")
+  nama      String    @map("nama")
+  nomorHp   String    @unique @map("nomor_hp")
+  nomorWa   String?   @unique @map("nomor_wa")
+  username  String?   @unique @map("username")
+  email     String?   @unique @map("email")
+  password  String?   @map("password")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("users")
+}
+
+model JenisPilihan {
+  jenisPilihanId   String       @id @default(uuid()) @map("jenis_pilihan_id")
+  namaJenisPilihan String       @map("nama_jenis_pilihan")
+  deskripsi        String       @map("deskripsi")
+  JenisMasuk       JenisMasuk[]
+
+  @@map("jenis_pilihan")
+}
+
+model JenisMasuk {
+  jenisMasukId   String           @id @default(uuid()) @map("jenis_masuk_id")
+  jenisPilihanId String           @map("jenis_pilihan_id")
+  namaJenisMasuk String           @map("nama_jenis_masuk")
+  deskripsi      String           @map("deskripsi")
+  JenisPilihan   JenisPilihan     @relation(fields: [jenisPilihanId], references: [jenisPilihanId])
+  TargetIntake   TargetIntake[]
+  TargetDb       TargetDb[]
+  CapaianRincian CapaianRincian[]
+
+  @@map("jenis_masuk")
+}
+
+model Prodi {
+  prodiId      String         @id @default(uuid()) @map("prodi_id")
+  namaProdi    String         @map("nama_prodi")
+  deskripsi    String         @map("deskripsi")
+  TargetIntake TargetIntake[]
+
+  @@map("prodi")
+}
+
+model Semester {
+  semesterId   String  @id @default(uuid()) @map("semester_id")
+  namaSemester String  @map("nama_semester")
+  deskripsi    String  @map("deskripsi")
+  Tahun        Tahun[]
+
+  @@map("semester")
+}
+
+model Tahun {
+  tahunId        String           @id @default(uuid()) @map("tahun_id")
+  semesterId     String           @map("semester_id")
+  namaTahun      String           @map("nama_tahun")
+  deskripsi      String           @map("deskripsi")
+  Semester       Semester         @relation(fields: [semesterId], references: [semesterId])
+  TargetIntake   TargetIntake[]
+  TargetDb       TargetDb[]
+  CapaianRincian CapaianRincian[]
+
+  @@map("tahun")
+}
+
+model TargetDb {
+  targetDbId   String     @id @default(uuid()) @map("target_db_id")
+  tahunId      String     @map("tahun_id")
+  jenisMasukId String     @map("jenis_masuk_id")
+  target       Int        @map("target")
+  Tahun        Tahun      @relation(fields: [tahunId], references: [tahunId])
+  JenisMasuk   JenisMasuk @relation(fields: [jenisMasukId], references: [jenisMasukId])
+
+  @@map("target_db")
+}
+
+model StatusIntake {
+  statusIntakeId String           @id @default(uuid()) @map("status_intake_id")
+  namaStatus     String           @map("nama_status")
+  persentase     Int              @map("persentase")
+  deskripsi      String           @map("deskripsi")
+  CapaianRincian CapaianRincian[]
+
+  @@map("status_intake")
+}
+
+model TargetIntake {
+  targetIntakeId String     @id @default(uuid()) @map("target_intake_id")
+  tahunId        String     @map("tahun_id")
+  prodiId        String?    @map("prodi_id")
+  jenisMasukId   String     @map("jenis_masuk_id")
+  target         Int        @map("kuota")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  Tahun          Tahun      @relation(fields: [tahunId], references: [tahunId])
+  Prodi          Prodi?     @relation(fields: [prodiId], references: [prodiId])
+  JenisMasuk     JenisMasuk @relation(fields: [jenisMasukId], references: [jenisMasukId])
+  Capaian        Capaian[]
+
+  @@map("target_intake")
+}
+
+model Capaian {
+  capaianId      String       @id @default(uuid()) @map("capaian_id")
+  targetIntakeId String       @map("target_intake_id")
+  weekday        Int          @map("weekday")
+  weekend        Int          @map("weekend")
+  TargetIntake   TargetIntake @relation(fields: [targetIntakeId], references: [targetIntakeId])
+
+  @@map("capaian")
+}
+
+model CapaianRincian {
+  capaianRincianId String       @id @default(uuid()) @map("capaian_rincian_id")
+  statusIntakeId   String       @map("status_intake_id")
+  tahunId          String       @map("tahun_id")
+  jenisMasukId     String       @map("jenis_masuk_id")
+  capaian          Int          @map("capaian")
+  StatusIntake     StatusIntake @relation(fields: [statusIntakeId], references: [statusIntakeId])
+  Tahun            Tahun        @relation(fields: [tahunId], references: [tahunId])
+  JenisMasuk       JenisMasuk   @relation(fields: [jenisMasukId], references: [jenisMasukId])
+
+  @@map("capaian_rincian")
+}
