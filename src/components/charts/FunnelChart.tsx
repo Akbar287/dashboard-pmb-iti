@@ -1,13 +1,5 @@
 "use client";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import {
   Card,
@@ -16,35 +8,74 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { enrollmentFunnel } from "@/lib/data";
+import { IntakeOutput } from "@/types/type";
+import React, { useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "../ui/button";
 
-const FunnelChart = () => {
-  const sortedData = [...enrollmentFunnel].sort((a, b) => b.value - a.value);
+const FunnelChart = ({ dataRaw }: { dataRaw: IntakeOutput[] }) => {
+  const [index, setIndex] = React.useState<number>(0);
+  const [enrollmentFunnel, setEnrollmentFunnel] = React.useState(
+    dataRaw[index].capaian_rincian.map((c, i) => ({
+      name: c.nama_status_intake,
+      value: c.capaian,
+    }))
+  );
 
-  const chartConfig = {
-    value: {
-      label: "Students",
-      theme: {
-        light: "#4f46e5",
-        dark: "#4f46e5",
-      },
-    },
-  };
+  useEffect(() => {
+    setEnrollmentFunnel(
+      dataRaw[index].capaian_rincian.map((c, i) => ({
+        name: c.nama_status_intake,
+        value: c.capaian,
+      }))
+    );
+  }, [index]);
 
-  // Calculate percentage from the initial stage
-  const initialValue = sortedData[0].value;
-  const dataWithPercentage = sortedData.map((item) => ({
+  const chartConfig = {};
+
+  const totalValue = enrollmentFunnel.reduce((sum, c) => sum + c.value, 0);
+  const dataWithPercentage = enrollmentFunnel.map((item) => ({
     ...item,
-    percentage: ((item.value / initialValue) * 100).toFixed(1),
+    percentage: ((item.value / totalValue) * 100).toFixed(1),
   }));
 
   return (
     <Card className="border shadow-sm bg-white/60">
       <CardHeader>
-        <CardTitle>Student Enrollment Funnel</CardTitle>
-        <CardDescription>
-          Transition from lead to enrolled student
-        </CardDescription>
+        <div className="flex justify-between">
+          <div>
+            <CardTitle>Alur Penerimaan Mahasiswa Baru</CardTitle>
+            <CardDescription>
+              {dataRaw[index].tahun +
+                " Semester " +
+                dataRaw[index].semester +
+                " - " +
+                dataRaw[index].jenis_pilihan +
+                " " +
+                dataRaw[index].jenis_masuk}
+            </CardDescription>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              size={"sm"}
+              className="rounded-full cursor-pointer hover:scale-110 transition-all duration-150 hover:bg-amber-500 bg-transparent border border-gray-300 active:scale-90"
+              variant={"default"}
+              disabled={index === 0}
+              onClick={() => setIndex(index - 1)}
+            >
+              <ChevronLeft className="text-gray-500" />
+            </Button>
+            <Button
+              size={"sm"}
+              className="rounded-full cursor-pointer  hover:scale-110 transition-all duration-150 hover:bg-amber-500 bg-transparent border border-gray-300 active:scale-90"
+              variant={"default"}
+              disabled={index === dataRaw.length - 1}
+              onClick={() => setIndex(index + 1)}
+            >
+              <ChevronRight className="text-gray-500" />
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className={`w-full`}>
@@ -71,7 +102,7 @@ const FunnelChart = () => {
                 content={<ChartTooltipContent />}
                 formatter={(value, name, props) => [
                   `${value} (${props.payload.percentage}%)`,
-                  "Students",
+                  " Mahasiswa",
                 ]}
               />
               <Bar
@@ -81,11 +112,10 @@ const FunnelChart = () => {
                 label={{
                   position: "right",
                   formatter: (value: number, entry: any) => {
-                    // Make sure entry and entry.percentage exist before accessing
                     if (entry && entry.percentage) {
                       return `${entry.percentage}%`;
                     }
-                    return ""; // Return empty string if percentage is not available
+                    return "";
                   },
                   fill: "#666",
                   fontSize: 12,
@@ -93,15 +123,6 @@ const FunnelChart = () => {
               />
             </BarChart>
           </ChartContainer>
-        </div>
-        <div className="mt-4 text-sm text-gray-600">
-          <p>
-            This funnel visualization demonstrates the student enrollment
-            journey from initial identification to becoming active students. The
-            chart shows a decreasing pattern as students progress through each
-            stage, with percentages reflecting the conversion rate from the
-            initial pool of prospects.
-          </p>
         </div>
       </CardContent>
     </Card>

@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { IntakeOutput, TransformedData, TransformedStatus, OutputJson } from "../types/type"
+import { IntakeOutput, TransformedData, TransformedStatus, OutputJson, GroupedDataItem } from "../types/type"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -138,4 +138,38 @@ export function transformJson(input: IntakeOutput[]): { s1: OutputJson; psppi: O
     s1: s1Output,
     psppi: psppiOutput
   };
+}
+
+export function transformDataHeatmap(data: IntakeOutput[]): GroupedDataItem[] {
+  const groupedData: Record<string, { 
+    jenis_pilihan: string; 
+    jenis_masuk: string; 
+    tahun: number; 
+    data: { 
+      semester: string; 
+      target_db: number; 
+      target_intake: number; 
+    }[]; 
+  }> = {};
+
+  for (const item of data) {
+      const key = `${item.jenis_pilihan}-${item.jenis_masuk}-${item.tahun}`;
+      
+      if (!groupedData[key]) {
+          groupedData[key] = {
+              jenis_pilihan: item.jenis_pilihan,
+              jenis_masuk: item.jenis_masuk,
+              tahun: parseInt(String(item.tahun)),
+              data: []
+          };
+      }
+
+      groupedData[key].data.push({
+          semester: item.semester,
+          target_db: item.target_db,
+          target_intake: item.target_intake
+      });
+  }
+
+  return Object.values(groupedData);
 }

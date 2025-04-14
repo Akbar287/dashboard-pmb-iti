@@ -9,21 +9,31 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { programSemesterComparison } from "@/lib/data";
+import { GroupedDataItem } from "@/types/type";
 
 const getColor = (value: number) => {
-  // Color gradient from light to dark blue based on value
-  if (value >= 200) return "#4338ca"; // Very dark blue for highest values
+  if (value >= 200) return "#4338ca";
   if (value >= 180) return "#4f46e5";
   if (value >= 160) return "#6366f1";
   if (value >= 140) return "#818cf8";
   if (value >= 120) return "#a5b4fc";
-  return "#c7d2fe"; // Lightest blue for lowest values
+  return "#c7d2fe";
 };
 
-const HeatmapChart = () => {
+type IHeatmapChart = {
+  dataRaw: GroupedDataItem[];
+};
+
+const HeatmapChart = ({ dataRaw }: IHeatmapChart) => {
+  const data = dataRaw.map((d, i) => ({
+    program: d.tahun + " " + d.jenis_masuk + " " + d.jenis_pilihan,
+    oddSemester: d.data.find((s) => s.semester === "Ganjil")?.target_intake,
+    evenSemester: d.data.find((s) => s.semester === "Genap")?.target_intake,
+  }));
+
   const maxValue = Math.max(
-    ...programSemesterComparison.map((item) =>
-      Math.max(item.oddSemester, item.evenSemester)
+    ...data.map((item) =>
+      Math.max(item.oddSemester ?? 0, item.evenSemester ?? 0)
     )
   );
   return (
@@ -43,7 +53,7 @@ const HeatmapChart = () => {
               </tr>
             </thead>
             <tbody>
-              {programSemesterComparison.map((program, index) => (
+              {data.map((program, index) => (
                 <tr key={index}>
                   <td className={`p-2 border-t text-sm`}>{program.program}</td>
                   <td className="p-2 border-t">
@@ -51,8 +61,7 @@ const HeatmapChart = () => {
                       <div
                         className={`h-10 w-full flex items-center justify-center text-sm font-medium text-white`}
                         style={{
-                          backgroundColor: getColor(program.oddSemester),
-                          opacity: program.oddSemester / maxValue,
+                          backgroundColor: getColor(program.oddSemester ?? 0),
                         }}
                       >
                         {program.oddSemester}
@@ -64,8 +73,7 @@ const HeatmapChart = () => {
                       <div
                         className={`h-10 w-full flex items-center justify-center text-sm font-medium text-white`}
                         style={{
-                          backgroundColor: getColor(program.evenSemester),
-                          opacity: program.evenSemester / maxValue,
+                          backgroundColor: getColor(program.evenSemester ?? 0),
                         }}
                       >
                         {program.evenSemester}
@@ -99,19 +107,6 @@ const HeatmapChart = () => {
             </div>
             <div className="text-xs">High</div>
           </div>
-        </div>
-
-        <div className="mt-4 text-sm text-gray-600">
-          <p>
-            This heatmap provides a visual comparison of enrollment achievements
-            across different study programs between odd and even semesters. The
-            color intensity represents the volume of enrollments, with darker
-            blues indicating higher student numbers. This visualization enables
-            quick identification of high-performing programs and
-            semester-specific patterns. Programs with consistent color intensity
-            across both semesters show stable enrollment, while variations
-            highlight seasonal differences.
-          </p>
         </div>
       </CardContent>
     </Card>

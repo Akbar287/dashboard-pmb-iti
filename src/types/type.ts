@@ -97,3 +97,14 @@ export interface OutputJson {
   prodi?: OutputProdi[];
   no_prodi?: OutputNoProdi[];
 };
+
+export interface GroupedDataItem {
+  jenis_pilihan: string;
+  jenis_masuk: string;
+  tahun: number;
+  data: {
+      semester: string;
+      target_db: number;
+      target_intake: number;
+  }[];
+}
