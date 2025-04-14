@@ -8,7 +8,6 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { programSemesterComparison } from "@/lib/data";
 import { GroupedDataItem } from "@/types/type";
 
 const getColor = (value: number) => {
