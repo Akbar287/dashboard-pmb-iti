@@ -9,7 +9,6 @@ export default async function Home() {
   const status = session ? "authenticated" : "unauthenticated";
 
   const prisma = new PrismaClient();
-
   const intake = await prisma.targetIntake.findMany({
     select: {
       Tahun: {
@@ -80,6 +79,7 @@ export default async function Home() {
         },
       },
       target: true,
+      targetDbId: true,
     },
   });
 
@@ -285,6 +285,8 @@ export default async function Home() {
   const finalResult: IntakeOutput[] = Array.from(mergedMap.values()).map(
     ({ _psppiCounted, ...rest }) => rest
   );
+
+  console.dir(finalResult);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-200 to-blue-300 via-green-200 dark:from-gray-800 dark:to-gray-600 dark:via-gray-700 w-full overflow-x-hidden">

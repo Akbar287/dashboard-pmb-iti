@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import HeaderDashboard from "./HeaderDashboard";
 import { Session } from "next-auth";
@@ -23,6 +24,8 @@ import {
 } from "./ui/table";
 import { Button } from "./ui/button";
 import { PenIcon, Trash2Icon } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const DashboardAdmin = ({
   session,
@@ -31,7 +34,7 @@ const DashboardAdmin = ({
   session: Session | null;
   finalResult: IntakeOutput[];
 }) => {
-  console.dir(finalResult);
+  const router = useRouter();
   return (
     <div className="container w-full mx-auto p-4">
       <div className="mb-8">
@@ -77,14 +80,24 @@ const DashboardAdmin = ({
                       <TableCell>{f.jenis_pilihan}</TableCell>
                       <TableCell>{f.target_db}</TableCell>
                       <TableCell>{f.target_intake}</TableCell>
-                      <TableCell className="flex">
+                      <TableCell>
                         <Button
                           variant={"default"}
+                          onClick={() =>
+                            router.push(
+                              "/program/" +
+                                "/" +
+                                f.jenis_masuk_id +
+                                "/year/" +
+                                f.tahun_id
+                            )
+                          }
                           className="mr-2 hover:scale-110 active:scale-90 transition-all duration-100 cursor-pointer "
                         >
                           <PenIcon />
                         </Button>
                         <Button
+                          onClick={() => toast("Belum Tersedia")}
                           variant={"destructive"}
                           className="hover:scale-110 active:scale-90 transition-all duration-100 cursor-pointer "
                         >
