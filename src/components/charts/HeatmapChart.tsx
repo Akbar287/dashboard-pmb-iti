@@ -47,9 +47,9 @@ const HeatmapChart = ({ dataRaw }: IHeatmapChart) => {
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className={`p-2 text-left text-sm`}>Study Program</th>
-                <th className={`p-2 text-center text-sm`}>Odd Semester</th>
-                <th className={`p-2 text-center text-sm`}>Even Semester</th>
+                <th className={`p-2 text-left text-sm`}>Program</th>
+                <th className={`p-2 text-center text-sm`}>Semester Ganjil</th>
+                <th className={`p-2 text-center text-sm`}>Semester Genap</th>
               </tr>
             </thead>
             <tbody>
