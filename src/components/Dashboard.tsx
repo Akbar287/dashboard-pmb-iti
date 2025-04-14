@@ -13,15 +13,19 @@ import {
 import DataRincianIntake from "./DataRincianIntake";
 import HeaderDashboard from "./HeaderDashboard";
 import DataRincianPerProdi from "./DataRincianPerProdi";
+import { Session } from "next-auth";
 
-const Dashboard = ({ finalResult }: { finalResult: IntakeOutput[] }) => {
-  console.dir(finalResult, { depth: null });
-  console.dir(transformDataHeatmap(finalResult), { depth: null });
-
+const Dashboard = async ({
+  session,
+  finalResult,
+}: {
+  session: Session | null;
+  finalResult: IntakeOutput[];
+}) => {
   return (
-    <div className="container mx-auto p-4">
+    <div className="container w-full mx-auto p-4">
       <div className="mb-8">
-        <HeaderDashboard />
+        <HeaderDashboard session={session} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

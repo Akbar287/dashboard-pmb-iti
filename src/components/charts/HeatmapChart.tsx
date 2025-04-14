@@ -36,7 +36,7 @@ const HeatmapChart = ({ dataRaw }: IHeatmapChart) => {
     )
   );
   return (
-    <Card className="border shadow-sm bg-white/60">
+    <Card className="border shadow-sm bg-white/60 dark:bg-gray-800">
       <CardHeader>
         <CardTitle>Program Achievement Comparison by Semester</CardTitle>
         <CardDescription>Comparative heatmap visualization</CardDescription>

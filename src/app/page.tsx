@@ -1,17 +1,24 @@
 import Dashboard from "@/components/Dashboard";
 import { PrismaClient } from "@/generated/prisma";
 import { IntakeOutput } from "../types/type";
+import { getSession } from "../provider/api";
+import DashboardAdmin from "@/components/DashboardAdmin";
 
 export default async function Home() {
+  const session = await getSession();
+  const status = session ? "authenticated" : "unauthenticated";
+
   const prisma = new PrismaClient();
 
   const intake = await prisma.targetIntake.findMany({
     select: {
       Tahun: {
         select: {
+          tahunId: true,
           namaTahun: true,
           Semester: {
             select: {
+              semesterId: true,
               namaSemester: true,
             },
           },
@@ -19,9 +26,11 @@ export default async function Home() {
       },
       JenisMasuk: {
         select: {
+          jenisMasukId: true,
           namaJenisMasuk: true,
           JenisPilihan: {
             select: {
+              jenisPilihanId: true,
               namaJenisPilihan: true,
             },
           },
@@ -29,12 +38,14 @@ export default async function Home() {
       },
       Prodi: {
         select: {
+          prodiId: true,
           namaProdi: true,
         },
       },
       target: true,
       Capaian: {
         select: {
+          capaianId: true,
           weekday: true,
           weekend: true,
         },
@@ -46,9 +57,11 @@ export default async function Home() {
     select: {
       Tahun: {
         select: {
+          tahunId: true,
           namaTahun: true,
           Semester: {
             select: {
+              semesterId: true,
               namaSemester: true,
             },
           },
@@ -56,9 +69,11 @@ export default async function Home() {
       },
       JenisMasuk: {
         select: {
+          jenisMasukId: true,
           namaJenisMasuk: true,
           JenisPilihan: {
             select: {
+              jenisPilihanId: true,
               namaJenisPilihan: true,
             },
           },
@@ -72,9 +87,11 @@ export default async function Home() {
     select: {
       Tahun: {
         select: {
+          tahunId: true,
           namaTahun: true,
           Semester: {
             select: {
+              semesterId: true,
               namaSemester: true,
             },
           },
@@ -82,17 +99,21 @@ export default async function Home() {
       },
       JenisMasuk: {
         select: {
+          jenisMasukId: true,
           namaJenisMasuk: true,
           JenisPilihan: {
             select: {
+              jenisPilihanId: true,
               namaJenisPilihan: true,
             },
           },
         },
       },
       capaian: true,
+      capaianRincianId: true,
       StatusIntake: {
         select: {
+          statusIntakeId: true,
           namaStatus: true,
           persentase: true,
           deskripsi: true,
@@ -105,7 +126,11 @@ export default async function Home() {
     tahun: string,
     semester: string,
     jenisPilihan: string,
-    jenisMasuk: string
+    jenisMasuk: string,
+    tahunId: string,
+    semesterId: string,
+    jenisMasukId: string,
+    jenisPilihanId: string
   ) => {
     return `${tahun}__${semester}__${jenisPilihan}__${jenisMasuk}`;
   };
@@ -117,8 +142,21 @@ export default async function Home() {
     const semester = item.Tahun?.Semester?.namaSemester;
     const jenisPilihan = item.JenisMasuk?.JenisPilihan?.namaJenisPilihan;
     const jenisMasuk = item.JenisMasuk?.namaJenisMasuk;
+    const tahunId = item.Tahun?.tahunId;
+    const semesterId = item.Tahun?.Semester.semesterId;
+    const jenisPilihanId = item.JenisMasuk?.JenisPilihan.jenisPilihanId;
+    const jenisMasukId = item.JenisMasuk.jenisMasukId;
 
-    const key = makeKey(tahun, semester, jenisPilihan, jenisMasuk);
+    const key = makeKey(
+      tahun,
+      semester,
+      jenisPilihan,
+      jenisMasuk,
+      tahunId,
+      semesterId,
+      jenisMasukId,
+      jenisPilihanId
+    );
 
     if (!mergedMap.has(key)) {
       mergedMap.set(key, {
@@ -131,6 +169,10 @@ export default async function Home() {
         capaian_rincian: [],
         prodi: [],
         _psppiCounted: false,
+        tahun_id: tahunId,
+        semester_id: semesterId,
+        jenis_masuk_id: jenisMasukId,
+        jenis_pilihan_id: jenisPilihanId,
       });
     }
 
@@ -139,6 +181,7 @@ export default async function Home() {
       if (!group._psppiCounted) {
         group.target_intake += item.target;
         group.prodi.push({
+          prodi_id: item.Prodi?.prodiId,
           nama_prodi: null,
           target_intake: item.target,
           weekday: item.Capaian[0]?.weekday ?? 0,
@@ -150,10 +193,12 @@ export default async function Home() {
       if (item.Prodi) {
         group.target_intake += item.target;
         group.prodi.push({
+          prodi_id: item.Prodi?.prodiId,
           nama_prodi: item.Prodi.namaProdi,
           target_intake: item.target,
-          weekday: item.Capaian[0]?.weekday ?? 0,
-          weekend: item.Capaian[0]?.weekend ?? 0,
+          capaian_id: item.Capaian[0].capaianId,
+          weekday: item.Capaian[0].weekday ?? 0,
+          weekend: item.Capaian[0].weekend ?? 0,
         });
       }
     }
@@ -164,8 +209,21 @@ export default async function Home() {
     const semester = item.Tahun?.Semester?.namaSemester;
     const jenisPilihan = item.JenisMasuk?.JenisPilihan?.namaJenisPilihan;
     const jenisMasuk = item.JenisMasuk?.namaJenisMasuk;
+    const tahunId = item.Tahun?.tahunId;
+    const semesterId = item.Tahun?.Semester.semesterId;
+    const jenisPilihanId = item.JenisMasuk?.JenisPilihan.jenisPilihanId;
+    const jenisMasukId = item.JenisMasuk.jenisMasukId;
 
-    const key = makeKey(tahun, semester, jenisPilihan, jenisMasuk);
+    const key = makeKey(
+      tahun,
+      semester,
+      jenisPilihan,
+      jenisMasuk,
+      tahunId,
+      semesterId,
+      jenisMasukId,
+      jenisPilihanId
+    );
 
     const group = mergedMap.get(key);
     if (group) {
@@ -173,6 +231,10 @@ export default async function Home() {
     } else {
       mergedMap.set(key, {
         tahun,
+        tahunId,
+        semesterId,
+        jenisMasukId,
+        jenisPilihanId,
         semester,
         jenis_pilihan: jenisPilihan,
         jenis_masuk: jenisMasuk,
@@ -189,13 +251,27 @@ export default async function Home() {
     const semester = item.Tahun?.Semester?.namaSemester;
     const jenisPilihan = item.JenisMasuk?.JenisPilihan?.namaJenisPilihan;
     const jenisMasuk = item.JenisMasuk?.namaJenisMasuk;
+    const tahunId = item.Tahun?.tahunId;
+    const semesterId = item.Tahun?.Semester.semesterId;
+    const jenisPilihanId = item.JenisMasuk?.JenisPilihan.jenisPilihanId;
+    const jenisMasukId = item.JenisMasuk.jenisMasukId;
 
-    const key = makeKey(tahun, semester, jenisPilihan, jenisMasuk);
+    const key = makeKey(
+      tahun,
+      semester,
+      jenisPilihan,
+      jenisMasuk,
+      tahunId,
+      semesterId,
+      jenisMasukId,
+      jenisPilihanId
+    );
 
     const group = mergedMap.get(key);
     if (group) {
       if (group.capaian_rincian.length < 5) {
         group.capaian_rincian.push({
+          capaian_id: item.capaianRincianId,
           nama_status_intake:
             item.StatusIntake?.persentase +
             "% - " +
@@ -211,8 +287,12 @@ export default async function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-200 to-blue-300 via-green-200 w-full overflow-x-hidden">
-      <Dashboard finalResult={finalResult} />
+    <div className="min-h-screen bg-gradient-to-br from-red-200 to-blue-300 via-green-200 dark:from-gray-800 dark:to-gray-600 dark:via-gray-700 w-full overflow-x-hidden">
+      {session ? (
+        <DashboardAdmin session={session} finalResult={finalResult} />
+      ) : (
+        <Dashboard session={session} finalResult={finalResult} />
+      )}
     </div>
   );
 }

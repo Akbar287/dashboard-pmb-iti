@@ -79,7 +79,7 @@ const StackedBarChart = ({ dataRaw }: { dataRaw: IntakeOutput[] }) => {
     },
   };
   return (
-    <Card className="border shadow-sm bg-white/60">
+    <Card className="border shadow-sm bg-white/60 dark:bg-gray-800">
       <CardHeader>
         <CardTitle>Capaian Target Per Program</CardTitle>
         <CardDescription>Distribution across admission stages</CardDescription>

@@ -78,7 +78,7 @@ const Donutchart = ({ dataRaw }: { dataRaw: IntakeOutput[] }) => {
   const chartConfig = {};
 
   return (
-    <Card className="border shadow-sm bg-white/60">
+    <Card className="border shadow-sm bg-white/60 dark:bg-gray-800">
       <CardHeader>
         <div className="flex justify-between">
           <div>
@@ -93,7 +93,7 @@ const Donutchart = ({ dataRaw }: { dataRaw: IntakeOutput[] }) => {
               disabled={index === 0}
               onClick={() => setIndex(index - 1)}
             >
-              <ChevronLeft className="text-gray-500" />
+              <ChevronLeft className="text-gray-500 dark:text-gray-200" />
             </Button>
             <Button
               size={"sm"}
@@ -102,7 +102,7 @@ const Donutchart = ({ dataRaw }: { dataRaw: IntakeOutput[] }) => {
               disabled={index === dataRaw.length - 1}
               onClick={() => setIndex(index + 1)}
             >
-              <ChevronRight className="text-gray-500" />
+              <ChevronRight className="text-gray-500 dark:text-gray-200" />
             </Button>
           </div>
         </div>

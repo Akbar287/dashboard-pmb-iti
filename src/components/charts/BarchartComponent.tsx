@@ -82,7 +82,7 @@ const BarchartComponent = ({ dataRaw }: { dataRaw: IntakeOutput[] }) => {
   } satisfies ChartConfig;
 
   return (
-    <Card className="border shadow-sm bg-white/60">
+    <Card className="border shadow-sm bg-white/60 dark:bg-gray-800">
       <CardHeader>
         <div className="flex justify-between">
           <div>
@@ -97,7 +97,7 @@ const BarchartComponent = ({ dataRaw }: { dataRaw: IntakeOutput[] }) => {
               disabled={index === 0}
               onClick={() => setIndex(index - 1)}
             >
-              <ChevronLeft className="text-gray-500" />
+              <ChevronLeft className="text-gray-500 dark:text-gray-200" />
             </Button>
             <Button
               size={"sm"}
@@ -106,7 +106,7 @@ const BarchartComponent = ({ dataRaw }: { dataRaw: IntakeOutput[] }) => {
               disabled={index === dataRaw.length - 1}
               onClick={() => setIndex(index + 1)}
             >
-              <ChevronRight className="text-gray-500" />
+              <ChevronRight className="text-gray-500 dark:text-gray-200" />
             </Button>
           </div>
         </div>
@@ -146,7 +146,7 @@ const BarchartComponent = ({ dataRaw }: { dataRaw: IntakeOutput[] }) => {
             </ChartContainer>
           )}
         </div>
-        <div className="mt-4 text-sm text-gray-600 text-justify">
+        <div className="mt-4 text-sm text-gray-600 dark:text-gray-200 text-justify">
           <p>
             Grafik ini menampilkan pencapaian penerimaan mahasiswa baru untuk
             setiap program studi, yang dikelompokkan berdasarkan jalur S1

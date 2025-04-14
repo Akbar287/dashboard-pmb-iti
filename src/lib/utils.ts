@@ -173,3 +173,20 @@ export function transformDataHeatmap(data: IntakeOutput[]): GroupedDataItem[] {
 
   return Object.values(groupedData);
 }
+
+export function groupDataByJenisPilihan(data: IntakeOutput[]) {
+  const groupedData: Record<string, IntakeOutput[]> = {};
+
+  for (const item of data) {
+      const jenisPilihan = item.jenis_pilihan;
+
+      if (groupedData[jenisPilihan]) {
+          groupedData[jenisPilihan].push(item);
+      } else {
+          groupedData[jenisPilihan] = [item];
+      }
+  }
+
+  return groupedData;
+}
+

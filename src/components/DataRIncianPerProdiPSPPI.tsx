@@ -20,7 +20,7 @@ import { OutputJson } from "@/types/type";
 
 const DataRIncianPerProdiPSPPI = ({ dataRaw }: { dataRaw: OutputJson }) => {
   return (
-    <Card className="w-full shadow-md bg-white/70">
+    <Card className="w-full shadow-md bg-white/70 dark:bg-gray-800">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
           Data Rincian Intake PSPPI

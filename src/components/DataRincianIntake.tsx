@@ -18,7 +18,7 @@ import { TransformedData } from "@/types/type";
 
 const DataRincianIntake = ({ dataRaw }: { dataRaw: TransformedData }) => {
   return (
-    <Card className="w-full shadow-md bg-white/70">
+    <Card className="w-full shadow-md bg-white/70 dark:bg-gray-800">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
           Data Rincian Intake
