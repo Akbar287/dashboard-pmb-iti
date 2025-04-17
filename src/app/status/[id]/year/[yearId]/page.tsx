@@ -4,14 +4,14 @@ import { Card } from "@/components/ui/card";
 
 import { PrismaClient } from "@/generated/prisma";
 
-type Props = {
+export default async function Page({
+  params,
+}: {
   params: {
     id: string;
     yearId: string;
   };
-};
-
-export default async function Page({ params }: Props) {
+}) {
   const prisma = new PrismaClient();
   const { id, yearId } = params;
 

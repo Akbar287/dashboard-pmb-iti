@@ -3,14 +3,14 @@ import ProgramIntake from "@/components/ProgramIntake";
 import { PrismaClient } from "@/generated/prisma";
 const prisma = new PrismaClient();
 
-type Props = {
+export default async function Page({
+  params,
+}: {
   params: {
     id: string;
     yearId: string;
   };
-};
-
-export default async function Page({ params }: Props) {
+}) {
   const { id, yearId } = params;
 
   const dataTargetDb = await prisma.targetDb.findFirst({
