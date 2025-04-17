@@ -7,8 +7,12 @@ interface PageParams {
   yearId: string;
 }
 
-export default async function Page({ params }: { params: PageParams }) {
-  const { id, yearId } = params;
+export default async function Page({
+  params,
+}: {
+  params: Promise<PageParams>;
+}) {
+  const { id, yearId } = await params;
 
   const dataTargetDb = await prisma.targetDb.findFirst({
     select: {

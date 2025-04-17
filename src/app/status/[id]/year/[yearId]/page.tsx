@@ -4,13 +4,13 @@ import { PrismaClient } from "@/generated/prisma";
 export default async function Page({
   params,
 }: {
-  params: {
+  params: Promise<{
     id: string;
     yearId: string;
-  };
+  }>;
 }) {
   const prisma = new PrismaClient();
-  const { id, yearId } = params;
+  const { id, yearId } = await params;
 
   const statusIntake = await prisma.statusIntake.findMany({
     select: {
