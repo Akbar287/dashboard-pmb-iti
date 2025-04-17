@@ -21,9 +21,6 @@ import { signIn, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { LogInIcon } from "lucide-react";
-import { authStore } from "@/store/AuthStore";
-import { setZustandValue } from "nes-zustand";
-import { AuthTypesProps } from "@/types/type";
 import {
   LoginFormValidation,
   LoginSkemaValidation,
@@ -153,8 +150,12 @@ export function LoginForm({
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={loading} className="w-full">
-                Login
+              <Button
+                type="submit"
+                disabled={loading}
+                className="mr-2 hover:scale-110 active:scale-90 transition-all duration-100 cursor-pointer "
+              >
+                {loading ? "Loading" : "Login"}
               </Button>
             </div>
           </div>

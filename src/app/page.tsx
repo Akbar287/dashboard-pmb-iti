@@ -6,11 +6,11 @@ import DashboardAdmin from "@/components/DashboardAdmin";
 
 export default async function Home() {
   const session = await getSession();
-  const status = session ? "authenticated" : "unauthenticated";
-
   const prisma = new PrismaClient();
+
   const intake = await prisma.targetIntake.findMany({
     select: {
+      targetIntakeId: true,
       Tahun: {
         select: {
           tahunId: true,
@@ -127,6 +127,8 @@ export default async function Home() {
     semester: string,
     jenisPilihan: string,
     jenisMasuk: string,
+    targetIntakeId: string,
+    targetDbId: string,
     tahunId: string,
     semesterId: string,
     jenisMasukId: string,
@@ -146,12 +148,16 @@ export default async function Home() {
     const semesterId = item.Tahun?.Semester.semesterId;
     const jenisPilihanId = item.JenisMasuk?.JenisPilihan.jenisPilihanId;
     const jenisMasukId = item.JenisMasuk.jenisMasukId;
+    const targetIntakeId = item.targetIntakeId;
+    const targetDbId = "";
 
     const key = makeKey(
       tahun,
       semester,
       jenisPilihan,
       jenisMasuk,
+      targetIntakeId,
+      targetDbId,
       tahunId,
       semesterId,
       jenisMasukId,
@@ -173,6 +179,8 @@ export default async function Home() {
         semester_id: semesterId,
         jenis_masuk_id: jenisMasukId,
         jenis_pilihan_id: jenisPilihanId,
+        targetIntakeId,
+        targetDbId,
       });
     }
 
@@ -182,8 +190,10 @@ export default async function Home() {
         group.target_intake += item.target;
         group.prodi.push({
           prodi_id: item.Prodi?.prodiId,
+          capaian_id: item.Capaian[0].capaianId,
           nama_prodi: null,
           target_intake: item.target,
+          targetIntakeId: item.targetIntakeId,
           weekday: item.Capaian[0]?.weekday ?? 0,
           weekend: item.Capaian[0]?.weekend ?? 0,
         });
@@ -196,6 +206,7 @@ export default async function Home() {
           prodi_id: item.Prodi?.prodiId,
           nama_prodi: item.Prodi.namaProdi,
           target_intake: item.target,
+          targetIntakeId: item.targetIntakeId,
           capaian_id: item.Capaian[0].capaianId,
           weekday: item.Capaian[0].weekday ?? 0,
           weekend: item.Capaian[0].weekend ?? 0,
@@ -213,12 +224,16 @@ export default async function Home() {
     const semesterId = item.Tahun?.Semester.semesterId;
     const jenisPilihanId = item.JenisMasuk?.JenisPilihan.jenisPilihanId;
     const jenisMasukId = item.JenisMasuk.jenisMasukId;
+    const targetIntakeId = "";
+    const targetDbId = item.targetDbId;
 
     const key = makeKey(
       tahun,
       semester,
       jenisPilihan,
       jenisMasuk,
+      targetIntakeId,
+      targetDbId,
       tahunId,
       semesterId,
       jenisMasukId,
@@ -231,11 +246,16 @@ export default async function Home() {
     } else {
       mergedMap.set(key, {
         tahun,
+        semester,
+        jenisPilihan,
+        jenisMasuk,
+        targetIntakeId,
+        targetDbId,
         tahunId,
         semesterId,
         jenisMasukId,
         jenisPilihanId,
-        semester,
+
         jenis_pilihan: jenisPilihan,
         jenis_masuk: jenisMasuk,
         target_db: item.target,
@@ -255,12 +275,16 @@ export default async function Home() {
     const semesterId = item.Tahun?.Semester.semesterId;
     const jenisPilihanId = item.JenisMasuk?.JenisPilihan.jenisPilihanId;
     const jenisMasukId = item.JenisMasuk.jenisMasukId;
+    const targetIntakeId = "";
+    const targetDbId = "";
 
     const key = makeKey(
       tahun,
       semester,
       jenisPilihan,
       jenisMasuk,
+      targetIntakeId,
+      targetDbId,
       tahunId,
       semesterId,
       jenisMasukId,
@@ -286,12 +310,10 @@ export default async function Home() {
     ({ _psppiCounted, ...rest }) => rest
   );
 
-  console.dir(finalResult);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-200 to-blue-300 via-green-200 dark:from-gray-800 dark:to-gray-600 dark:via-gray-700 w-full overflow-x-hidden">
       {session ? (
-        <DashboardAdmin session={session} finalResult={finalResult} />
+        <DashboardAdmin session={session} finalResultServer={finalResult} />
       ) : (
         <Dashboard session={session} finalResult={finalResult} />
       )}

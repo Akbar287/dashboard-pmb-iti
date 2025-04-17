@@ -4,6 +4,14 @@ export interface CapaianRincian {
   capaian: number;
 }
 
+export interface CapaianRincianDetail {
+  tahunId: string;
+  jenisMasukId: string;
+  capaian: number;
+  capaianRincianId: string;
+  StatusIntake: StatusIntake;
+}
+
 export interface ProdiItem {
   prodi_id: string;
   nama_prodi: string;
@@ -24,14 +32,16 @@ export interface IntakeOutput {
   jenis_masuk: string;
   target_db: number;
   target_intake: number;
+  targetIntakeId: string;
   capaian_rincian: CapaianRincian[];
   prodi: ProdiItem[];
 }
 
 export interface StatusIntake {
-  namaStatus: string;
-  persentase: number;
   deskripsi: string;
+    statusIntakeId: string;
+    namaStatus: string;
+    persentase: number;
 }
 
 export interface TransformedStatus {
@@ -111,4 +121,59 @@ export interface AuthTypesProps {
   nama: string
   avatar: string
   email: string
+}
+
+
+
+export interface Semester {
+  semesterId: number;
+  namaSemester: string;
+}
+
+export interface Tahun {
+  tahunId: number;
+  namaTahun: string;
+  Semester: Semester[];
+}
+
+export interface JenisPilihan {
+  jenisPilihanId: number;
+  namaJenisPilihan: string;
+}
+
+export interface JenisMasuk {
+  jenisMasukId: number;
+  namaJenisMasuk: string;
+  JenisPilihan: JenisPilihan[];
+}
+
+export interface TargetDb {
+  targetDbId: number;
+  target: number;
+  Tahun: Tahun;
+  JenisMasuk: JenisMasuk;
+}
+
+export interface Prodi {
+  prodiId: number;
+  namaProdi: string;
+}
+
+export interface Capaian {
+  capaianId: number;
+  weekday: number;
+  weekend: number;
+}
+
+export interface TargetIntake {
+  targetIntakeId: number;
+  target: number;
+  Prodi: Prodi;
+  Capaian: Capaian;
+}
+
+export interface CapaianRincianEdit {
+  capaianRincianId: number;
+  capaian: number;
+  StatusIntake: StatusIntake;
 }

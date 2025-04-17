@@ -26,6 +26,7 @@ const HeaderDashboard = ({ session }: { session: Session | null }) => {
   const router = useRouter();
   const [loadingLogout, setLoadingLogout] = React.useState<boolean>(false);
   const logout = async () => {
+    setLoadingLogout(true);
     await signOut()
       .then(() => {
         router.push("/");
@@ -82,8 +83,12 @@ const HeaderDashboard = ({ session }: { session: Session | null }) => {
       <CardFooter className="text-sm">
         {session ? (
           <React.Fragment>
-            <Button className="cursor-pointer" onClick={() => logout()}>
-              Keluar
+            <Button
+              className="mr-2 hover:scale-110 active:scale-90 transition-all duration-100 cursor-pointer "
+              onClick={() => logout()}
+              disabled={loadingLogout}
+            >
+              {loadingLogout ? "Keluar..." : "Keluar"}
             </Button>
             &nbsp;untuk keluar dari sistem
           </React.Fragment>

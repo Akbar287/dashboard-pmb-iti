@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import ProgramIntake from "@/components/ProgramIntake";
 
 import { PrismaClient } from "@/generated/prisma";
@@ -49,7 +48,7 @@ export default async function Page({ params }: Props) {
     },
   });
 
-  const dataProdi = await prisma.targetIntake.findMany({
+  const dataProdiServer = await prisma.targetIntake.findMany({
     select: {
       targetIntakeId: true,
       target: true,
@@ -73,28 +72,12 @@ export default async function Page({ params }: Props) {
     },
   });
 
-  const capaianRincian = await prisma.capaianRincian.findMany({
-    select: {
-      capaianRincianId: true,
-      capaian: true,
-      StatusIntake: {
-        select: {
-          statusIntakeId: true,
-          namaStatus: true,
-          persentase: true,
-        },
-      },
-    },
-    where: {
-      tahunId: yearId,
-      jenisMasukId: id,
-    },
-  });
-
-  console.log(dataTargetDb, dataProdi, capaianRincian);
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-200 to-blue-300 via-green-200 dark:from-gray-800 dark:to-gray-600 dark:via-gray-700 w-full overflow-x-hidden">
-      <ProgramIntake />
+      <ProgramIntake
+        dataTargetDbServer={dataTargetDb}
+        dataProdiServer={dataProdiServer}
+      />
     </div>
   );
 }
