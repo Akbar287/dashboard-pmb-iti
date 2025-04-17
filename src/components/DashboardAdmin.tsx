@@ -34,12 +34,11 @@ const DashboardAdmin = ({
   finalResultServer,
 }: {
   session: Session | null;
-  finalResultServer: IntakeOutput[];
+  finalResultServer: any;
 }) => {
   const router = useRouter();
 
-  const [finalResult, setFinalResult] =
-    React.useState<IntakeOutput[]>(finalResultServer);
+  const [finalResult, setFinalResult] = React.useState(finalResultServer);
   const [isOpenUpdateForm, setIsOpenUpdateForm] =
     React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(false);
@@ -73,7 +72,7 @@ const DashboardAdmin = ({
     if (data.status === "success") {
       setLoading(false);
       const index = finalResult.findIndex(
-        (d) => d.targetIntakeId === formUpdate.targetIntakeId
+        (d: any) => d.targetIntakeId === formUpdate.targetIntakeId
       );
       setFinalResult(
         replaceItemAtIndex(finalResult, index, {
@@ -135,7 +134,7 @@ const DashboardAdmin = ({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {finalResult.map((f, i) => (
+                  {finalResult.map((f: any, i: number) => (
                     <TableRow key={i}>
                       <TableCell>{f.tahun}</TableCell>
                       <TableCell>{f.semester}</TableCell>
