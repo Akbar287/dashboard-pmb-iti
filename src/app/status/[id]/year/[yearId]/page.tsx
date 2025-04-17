@@ -1,7 +1,4 @@
 import ListRincianCapaian from "@/components/ListRincianCapaian";
-import ProgramIntake from "@/components/ProgramIntake";
-import { Card } from "@/components/ui/card";
-
 import { PrismaClient } from "@/generated/prisma";
 
 export default async function Page({

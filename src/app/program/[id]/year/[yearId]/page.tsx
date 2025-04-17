@@ -1,16 +1,13 @@
 import ProgramIntake from "@/components/ProgramIntake";
-
 import { PrismaClient } from "@/generated/prisma";
 const prisma = new PrismaClient();
 
-export default async function Page({
-  params,
-}: {
-  params: {
-    id: string;
-    yearId: string;
-  };
-}) {
+interface PageParams {
+  id: string;
+  yearId: string;
+}
+
+export default async function Page({ params }: { params: PageParams }) {
   const { id, yearId } = params;
 
   const dataTargetDb = await prisma.targetDb.findFirst({
