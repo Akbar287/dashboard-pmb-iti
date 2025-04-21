@@ -73,11 +73,6 @@ const HeaderDashboard = ({ session }: { session: Session | null }) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          {session === null ? (
-            <div>Terakhir diperbarui pada 12 April 2025</div>
-          ) : (
-            <></>
-          )}
         </div>
       </CardContent>
       <CardFooter className="text-sm">
